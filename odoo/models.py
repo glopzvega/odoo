@@ -4893,26 +4893,31 @@ class BaseModel(MetaModel('DummyModel', (object,), {'_register': False})):
         onchange = onchange.strip()
 
         def process(res):
-            if not res:
-                return
-            if res.get('value'):
-                res['value'].pop('id', None)
-                self.update({key: val for key, val in res['value'].items() if key in self._fields})
-            if res.get('domain'):
-                result.setdefault('domain', {}).update(res['domain'])
-            if res.get('warning'):
-                if result.get('warning'):
-                    # Concatenate multiple warnings
-                    warning = result['warning']
-                    warning['message'] = '\n\n'.join(s for s in [
-                        warning.get('title'),
-                        warning.get('message'),
-                        res['warning'].get('title'),
-                        res['warning'].get('message'),
-                    ] if s)
-                    warning['title'] = _('Warnings')
-                else:
-                    result['warning'] = res['warning']
+
+            if isinstance(res, (list,)):
+                for el in res:
+                    process(el)
+            else:
+                if not res:
+                    return
+                if res.get('value'):
+                    res['value'].pop('id', None)
+                    self.update({key: val for key, val in res['value'].items() if key in self._fields})
+                if res.get('domain'):
+                    result.setdefault('domain', {}).update(res['domain'])
+                if res.get('warning'):
+                    if result.get('warning'):
+                        # Concatenate multiple warnings
+                        warning = result['warning']
+                        warning['message'] = '\n\n'.join(s for s in [
+                            warning.get('title'),
+                            warning.get('message'),
+                            res['warning'].get('title'),
+                            res['warning'].get('message'),
+                        ] if s)
+                        warning['title'] = _('Warnings')
+                    else:
+                        result['warning'] = res['warning']
 
         # onchange V8
         if onchange in ("1", "true"):
