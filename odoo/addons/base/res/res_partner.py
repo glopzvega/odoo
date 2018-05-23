@@ -28,7 +28,7 @@ WARNING_MESSAGE = [
 WARNING_HELP = _('Selecting the "Warning" option will notify user with the message, Selecting "Blocking Message" will throw an exception with the message and block the flow. The Message has to be written in the next field.')
 
 
-ADDRESS_FIELDS = ('street', 'street2', 'zip', 'city', 'state_id', 'country_id')
+ADDRESS_FIELDS = ('street', 'io_noext', 'io_noint', 'street2', 'zip', 'city', 'state_id', 'country_id')
 @api.model
 def _lang_get(self):
     return self.env['res.lang'].get_installed()
